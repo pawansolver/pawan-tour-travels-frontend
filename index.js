@@ -82,7 +82,7 @@ if (bookingForm) {
         };
 
         try {
-            const response = await fetch('http://localhost:5000/api/booking', {
+            const response = await fetch('https://pawan-tour-travels-backend-1.onrender.com/api/booking', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -119,7 +119,7 @@ if (contactForm) {
         };
 
         try {
-            const response = await fetch('http://localhost:5000/api/contact', {
+            const response = await fetch('https://pawan-tour-travels-backend-1.onrender.com/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
