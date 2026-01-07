@@ -74,7 +74,7 @@ header{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 2rem 9%;
+   
 }
  header .logo{
  font-size: 2.5rem;
@@ -1151,4 +1151,42 @@ header .icon .phone-btn:active{
 
 #pawan-packages-container .box:hover {
   transform: translateY(-5px);
+}
+@media (max-width: 768px) {
+    header {
+        padding: 1rem 2rem; /* मोबाइल के लिए padding कम */
+        flex-wrap: wrap;    /* आइटम wrap हो जाएँ */
+        gap: 0.5rem;        /* आइटम्स के बीच gap */
+    }
+
+    header .logo {
+        font-size: 2rem;    /* लोगो छोटा करें */
+    }
+
+    header .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        clip-path: polygon(0 0,100% 0,100% 0,0 0);
+    }
+
+    header .navbar.active {
+        clip-path: polygon(0 0,100% 0,100% 100%,0 100%);
+    }
+
+    header .navbar a {
+        font-size: 1.5rem;
+        padding: 0.7rem 0;
+    }
+
+    header .icon {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    header .icon .phone-btn {
+        justify-content: center;
+        width: 100%;
+        font-size: 1.3rem;
+    }
 }
