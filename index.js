@@ -82,7 +82,7 @@ if (bookingForm) {
 
         try {
             // ✅ Updated backend URL to custom domain
-            const response = await fetch('https://api.pawantourtravels.com/api/booking', {
+            const response = await fetch('https://pawan-tour-travels-backend-1.onrender.com/api/booking', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -120,7 +120,7 @@ if (contactForm) {
 
         try {
             // ✅ Updated backend URL to custom domain
-            const response = await fetch('https://api.pawantourtravels.com/api/contact', {
+            const response = await fetch('https://pawan-tour-travels-backend-1.onrender.com/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
