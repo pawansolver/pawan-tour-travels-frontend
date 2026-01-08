@@ -73,7 +73,6 @@ if (bookingForm) {
     bookingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // ------------------- FIXED -------------------
         const formData = {
             place: bookingForm.elements['place'].value,
             guests: bookingForm.elements['guests'].value,
@@ -82,7 +81,8 @@ if (bookingForm) {
         };
 
         try {
-            const response = await fetch('https://pawan-tour-travels-backend-1.onrender.com/api/booking', {
+            // ✅ Updated backend URL to custom domain
+            const response = await fetch('https://api.pawantourtravels.com/api/booking', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -119,7 +119,8 @@ if (contactForm) {
         };
 
         try {
-            const response = await fetch('https://pawan-tour-travels-backend-1.onrender.com/api/contact', {
+            // ✅ Updated backend URL to custom domain
+            const response = await fetch('https://api.pawantourtravels.com/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -139,6 +140,8 @@ if (contactForm) {
         }
     });
 }
+
+
 
 // Show popup on page load
 window.onload = function() {
