@@ -88,7 +88,13 @@ if (bookingForm) {
                 body: JSON.stringify(formData)
             });
 
-            const data = await response.json();
+           let data = {};
+try {
+  data = await response.json();
+} catch (e) {
+  console.warn("Invalid JSON from server");
+}
+
 
             if (response.ok) {
                 alert(data.message || 'Booking saved successfully!');
@@ -103,55 +109,84 @@ if (bookingForm) {
     });
 }
 
-// ----------------- Contact Form Submit -----------------
+
 const contactForm = document.querySelector('#contact-form');
 
 if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+  contactForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        const formData = {
-            name: contactForm.name.value,
-            email: contactForm.email.value,
-            phone: contactForm.phone.value,
-            subject: contactForm.subject.value,
-            message: contactForm.message.value
-        };
+    const data = {
+      name: contactForm.name.value,
+      email: contactForm.email.value,
+      phone: contactForm.phone.value,
+      subject: contactForm.subject.value,
+      message: contactForm.message.value
+    };
 
-        try {
-            // ✅ Updated backend URL to custom domain
-            const response = await fetch('https://pawan-tour-travels-backend-1.onrender.com/api/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
+    if (!data.name || !data.phone) {
+      alert("Name aur Phone required hai");
+      return;
+    }
 
-            const data = await response.json();
+    // 1️⃣ Save to MongoDB (FIXED)
+let mongoSaved = true;
 
-            if (response.ok) {
-                alert(data.message || 'Contact saved successfully!');
-                contactForm.reset();
-            } else {
-                alert(data.message || 'Error saving contact');
-            }
-        } catch (err) {
-            console.error(err);
-            alert('Server error');
-        }
-    });
+try {
+  const res = await fetch(
+    "https://pawan-tour-travels-backend-1.onrender.com/api/contact",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }
+  );
+
+  if (!res.ok) mongoSaved = false;
+} catch (err) {
+  console.error("MongoDB error:", err);
+  mongoSaved = false;
 }
 
 
+    // 2️⃣ Send to WhatsApp
+    const msg = encodeURIComponent(
+`📩 New Contact Enquiry
+👤 Name: ${data.name}
+📧 Email: ${data.email}
+📞 Phone: ${data.phone}
+📝 Subject: ${data.subject}
+
+💬 Message:
+${data.message}`
+    );
+
+    window.open(`https://wa.me/918340606361?text=${msg}`, "_blank");
+if (mongoSaved) {
+  alert("✅ Enquiry saved & sent successfully");
+} else {
+  alert("⚠️ Server issue, enquiry WhatsApp pe bhej di gayi");
+}
+
+    contactForm.reset();
+  });
+}
+
 
 // Show popup on page load
-window.onload = function() {
-  document.getElementById('popup').style.display = 'flex';
+window.onload = function () {
+  const popup = document.getElementById("popup");
+  if (popup) popup.style.display = "flex";
 };
 
+
 // Close popup when user clicks on X
-document.getElementById('closeBtn').onclick = function() {
-  document.getElementById('popup').style.display = 'none';
-};
+const closeBtn = document.getElementById("closeBtn");
+if (closeBtn) {
+  closeBtn.onclick = function () {
+    document.getElementById("popup").style.display = "none";
+  };
+}
 
 // Example function when user clicks "Request Now"
 function requestCallback() {
@@ -439,80 +474,4 @@ function sendBookingToWhatsApp(data) {
 📞 Please confirm booking`
   );
   window.open(`https://wa.me/918340606361?text=${msg}`, "_blank");
-}
-
-/* Booking Form Handler */
-if (typeof bookingForm !== "undefined" && bookingForm) {
-  bookingForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const data = {
-      place: bookingForm.place.value,
-      guests: bookingForm.guests.value,
-      arrival: bookingForm.arrival.value,
-      leaving: bookingForm.leaving.value
-    };
-
-    if (!validateDates(data.arrival, data.leaving)) return;
-
-    /* 1️⃣ Save to MongoDB */
-    try {
-      await fetch("https://pawan-tour-travels-backend-1.onrender.com/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-    } catch (err) {
-      console.error("MongoDB error:", err);
-    }
-
-    /* 2️⃣ Send to WhatsApp */
-    sendBookingToWhatsApp(data);
-
-    showToast("✅ Booking saved & sent on WhatsApp");
-    bookingForm.reset();
-  });
-}
-/* ================================
-   CONTACT FORM → WHATSAPP (ADD ON)
-   ================================ */
-/* ================================
-   CONTACT FORM → WHATSAPP (FIXED)
-   ================================ */
-
-if (typeof contactForm !== "undefined" && contactForm) {
-
-  contactForm.addEventListener("submit", () => {
-
-    // 🔒 STEP 1: values ko pehle store karo
-    const data = {
-      name: contactForm.name.value,
-      email: contactForm.email.value,
-      phone: contactForm.phone.value,
-      subject: contactForm.subject.value,
-      message: contactForm.message.value
-    };
-
-    // ⏳ STEP 2: thoda delay (MongoDB ke baad)
-    setTimeout(() => {
-
-      const msg = encodeURIComponent(
-`📩 *New Contact Enquiry*
-👤 Name: ${data.name}
-📧 Email: ${data.email}
-📞 Phone: ${data.phone}
-📝 Subject: ${data.subject}
-
-💬 Message:
-${data.message}`
-      );
-
-      window.open(
-        `https://wa.me/918340606361?text=${msg}`,
-        "_blank"
-      );
-
-    }, 600); // delay safe hai
-  });
-
 }
