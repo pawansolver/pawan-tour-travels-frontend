@@ -2,7 +2,7 @@
 let searchbtn = document.querySelector("#search-btn");
 let searchbar = document.querySelector(".search-bar-container");
 let formbtn = document.querySelector("#login-btn");
-let loginform = document.querySelector('#login-form-container');
+let loginform = document.querySelector('.login-form-container');
 let formclose = document.querySelector('#form-close');
 let menu = document.querySelector('#menu-bar');
 let navbar = document.querySelector('.navbar');
@@ -51,7 +51,7 @@ videoBtn.forEach(btn => {
 });
 
 // ----------------- Review Slider -----------------
-var swiper = new Swiper(".review-slider", {
+var swiper = new Swiper(".review-photos-swiper", {
     loop: true,
     grabCursor: true,
     spaceBetween: 20,
@@ -79,7 +79,7 @@ if (bookingForm) {
             arrival: bookingForm.elements['arrival'].value,
             leaving: bookingForm.elements['leaving'].value
         };
-
+   if (!validateDates(formData.arrival, formData.leaving)) return; 
         try {
             // ✅ Updated backend URL to custom domain
             const response = await fetch('https://pawan-tour-travels-backend-1.onrender.com/api/booking', {
