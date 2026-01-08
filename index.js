@@ -457,7 +457,7 @@ if (typeof bookingForm !== "undefined" && bookingForm) {
 
     /* 1️⃣ Save to MongoDB */
     try {
-      await fetch("http://localhost:5000/api/booking", {
+      await fetch("https://pawan-tour-travels-backend-1.onrender.com/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
