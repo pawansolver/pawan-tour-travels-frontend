@@ -98,6 +98,7 @@ try {
 
             if (response.ok) {
                 alert(data.message || 'Booking saved successfully!');
+                 sendBookingToWhatsApp(formData);
                 bookingForm.reset();
             } else {
                 alert(data.message || 'Error saving booking');
