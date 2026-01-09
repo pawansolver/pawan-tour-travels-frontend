@@ -68,110 +68,119 @@ var swiper = new Swiper(".review-photos-swiper", {
 
 // ----------------- Booking Form Submit -----------------
 const bookingForm = document.querySelector('#booking-form');
+const backendURL = "https://pawan-tour-travels-backend-1.onrender.com/api";
+
+function showToast(msg) {
+    const t = document.createElement("div");
+    t.innerText = msg;
+    t.style.cssText = "position:fixed;bottom:20px;right:20px;background:#222;color:#fff;padding:12px 18px;border-radius:6px;z-index:9999;";
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
 
 if (bookingForm) {
     bookingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const formData = {
-            place: bookingForm.elements['place'].value,
-            guests: bookingForm.elements['guests'].value,
-            arrival: bookingForm.elements['arrival'].value,
-            leaving: bookingForm.elements['leaving'].value
+            place: bookingForm.place.value.trim(),
+            guests: bookingForm.guests.value.trim(),
+            arrival: bookingForm.arrival.value,
+            leaving: bookingForm.leaving.value
         };
-   if (!validateDates(formData.arrival, formData.leaving)) return; 
+
+        // Validation
+        if (!formData.place || !formData.guests || !formData.arrival || !formData.leaving) {
+            showToast("All fields are required!");
+            return;
+        }
+        if (new Date(formData.leaving) <= new Date(formData.arrival)) {
+            showToast("Leaving date must be after arrival date");
+            return;
+        }
+
         try {
-            // ✅ Updated backend URL to custom domain
-            const response = await fetch('https://pawan-tour-travels-backend-1.onrender.com/api/booking', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            const res = await fetch(`${backendURL}/booking`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
             });
+            const data = await res.json();
 
-           let data = {};
-try {
-  data = await response.json();
-} catch (e) {
-  console.warn("Invalid JSON from server");
-}
-
-
-            if (response.ok) {
-                alert(data.message || 'Booking saved successfully!');
-                 sendBookingToWhatsApp(formData);
+            if (res.ok) {
+                showToast(data.message || "Booking saved successfully!");
+                // WhatsApp message
+                const msg = encodeURIComponent(
+`🚕 *New Booking Request*
+📍 Place: ${formData.place}
+👥 Guests: ${formData.guests}
+📅 Arrival: ${formData.arrival}
+📅 Leaving: ${formData.leaving}
+📞 Please confirm booking`
+                );
+                window.open(`https://wa.me/918340606361?text=${msg}`, "_blank");
                 bookingForm.reset();
             } else {
-                alert(data.message || 'Error saving booking');
+                showToast(data.message || "Error saving booking");
             }
         } catch (err) {
             console.error(err);
-            alert('Server error');
+            showToast("Server error! Try again later.");
         }
     });
 }
 
-
+// ----------------- Contact Form Submit -----------------
 const contactForm = document.querySelector('#contact-form');
+const backendURL = "https://pawan-tour-travels-backend-1.onrender.com/api";
 
 if (contactForm) {
-  contactForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    const data = {
-      name: contactForm.name.value,
-      email: contactForm.email.value,
-      phone: contactForm.phone.value,
-      subject: contactForm.subject.value,
-      message: contactForm.message.value
-    };
+        const formData = {
+            name: contactForm.name.value.trim(),
+            email: contactForm.email.value.trim(),
+            phone: contactForm.phone.value.trim(),
+            subject: contactForm.subject.value.trim(),
+            message: contactForm.message.value.trim()
+        };
 
-    if (!data.name || !data.phone) {
-      alert("Name aur Phone required hai");
-      return;
-    }
+        if (!formData.name || !formData.phone) {
+            alert("Name and Phone are required!");
+            return;
+        }
 
-    // 1️⃣ Save to MongoDB (FIXED)
-let mongoSaved = true;
+        try {
+            const res = await fetch(`${backendURL}/contact`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            });
+            const data = await res.json();
 
-try {
-  const res = await fetch(
-    "https://pawan-tour-travels-backend-1.onrender.com/api/contact",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    }
-  );
-
-  if (!res.ok) mongoSaved = false;
-} catch (err) {
-  console.error("MongoDB error:", err);
-  mongoSaved = false;
-}
-
-
-    // 2️⃣ Send to WhatsApp
-    const msg = encodeURIComponent(
+            if (res.ok) {
+                alert(data.message || "Contact saved successfully!");
+                const msg = encodeURIComponent(
 `📩 New Contact Enquiry
-👤 Name: ${data.name}
-📧 Email: ${data.email}
-📞 Phone: ${data.phone}
-📝 Subject: ${data.subject}
-
-💬 Message:
-${data.message}`
-    );
-
-    window.open(`https://wa.me/918340606361?text=${msg}`, "_blank");
-if (mongoSaved) {
-  alert("✅ Enquiry saved & sent successfully");
-} else {
-  alert("⚠️ Server issue, enquiry WhatsApp pe bhej di gayi");
+👤 Name: ${formData.name}
+📧 Email: ${formData.email}
+📞 Phone: ${formData.phone}
+📝 Subject: ${formData.subject}
+💬 Message: ${formData.message}`
+                );
+                window.open(`https://wa.me/918340606361?text=${msg}`, "_blank");
+                contactForm.reset();
+            } else {
+                alert(data.message || "Error saving contact");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Server error! Try again later.");
+        }
+    });
 }
 
-    contactForm.reset();
-  });
-}
 
 
 // Show popup on page load
