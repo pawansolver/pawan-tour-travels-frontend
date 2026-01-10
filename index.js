@@ -9,8 +9,10 @@ let navbar = document.querySelector('.navbar');
 let videoBtn = document.querySelectorAll('.vid-btn');
 let videoSlider = document.querySelector('#video-slider');
 // ================== GLOBAL CONFIG ==================
-const backendURL = "https://pawan-tour-travels-backend-1.onrender.com/api";
-
+// frontend/js/main.js ya jahan tumhara JS hai
+const backendURL = window.location.hostname === "localhost"
+  ? "http://localhost:5000/api"
+  : "https://pawan-tour-travels-backend-1.onrender.com/api";
 
 // ----------------- Scroll Behavior -----------------
 window.onscroll = () => {
