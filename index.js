@@ -86,7 +86,7 @@ if (bookingForm) {
 
         const formData = {
             place: bookingForm.place.value.trim(),
-            guests: bookingForm.guests.value.trim(),
+            guests: Number(bookingForm.guests.value),
             arrival: bookingForm.arrival.value,
             leaving: bookingForm.leaving.value
         };
