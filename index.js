@@ -8,6 +8,9 @@ let menu = document.querySelector('#menu-bar');
 let navbar = document.querySelector('.navbar');
 let videoBtn = document.querySelectorAll('.vid-btn');
 let videoSlider = document.querySelector('#video-slider');
+// ================== GLOBAL CONFIG ==================
+const backendURL = "https://pawan-tour-travels-backend-1.onrender.com/api";
+
 
 // ----------------- Scroll Behavior -----------------
 window.onscroll = () => {
@@ -51,7 +54,7 @@ videoBtn.forEach(btn => {
 });
 
 // ----------------- Review Slider -----------------
-var swiper = new Swiper(".review-photos-swiper", {
+var  reviewSwiper = new Swiper(".review-photos-swiper", {
     loop: true,
     grabCursor: true,
     spaceBetween: 20,
@@ -68,7 +71,6 @@ var swiper = new Swiper(".review-photos-swiper", {
 
 // ----------------- Booking Form Submit -----------------
 const bookingForm = document.querySelector('#booking-form');
-const backendURL = "https://pawan-tour-travels-backend-1.onrender.com/api";
 
 function showToast(msg) {
     const t = document.createElement("div");
@@ -132,7 +134,6 @@ if (bookingForm) {
 
 // ----------------- Contact Form Submit -----------------
 const contactForm = document.querySelector('#contact-form');
-const backendURL = "https://pawan-tour-travels-backend-1.onrender.com/api";
 
 if (contactForm) {
     contactForm.addEventListener('submit', async (e) => {
