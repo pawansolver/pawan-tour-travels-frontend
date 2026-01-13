@@ -13,7 +13,7 @@ let videoSlider = document.querySelector('#video-slider');
 const backendURL =
   window.location.hostname === "localhost"
     ? "http://localhost:5000/api"
-    : "https://pawan-tour-travels-backend-1.onrender.com/api";
+    : "https://api2.pawantourtravels.com/api";
 
 
 // ----------------- Scroll Behavior -----------------
